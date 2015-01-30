@@ -33,10 +33,10 @@ def zip_code_barchart(csv_lines, save_file='barchart.jpg'):
     for line in csv_lines:
         for column in zipcode_columns:
             zipcode = line[column]
-            if zipcode != '':
+            if zipcode != '' and zipcode[1].isdigit():
                 zipcode = zipcode[:5]
                 zipcodes.append(zipcode)
-    zip_set = sorted(set(zipcodes))    # sorted list of unique zipcode codes
+    zip_set = sorted(set(zipcodes))    # sorted list of unique zip codes
     zip_counts = [zipcodes.count(zipcode) for zipcode in zip_set]
     index = range(1, len(zip_set) + 1)
     fig = pylab.figure()
