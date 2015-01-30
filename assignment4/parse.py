@@ -27,7 +27,7 @@ def get_avg_latlng(csv_lines):
     avg_long = sum(all_long) / num_lines
     print('Average latitude, longitude: %s, %s' % (avg_lat, avg_long))
 
-def zip_code_barchart(csv_lines):
+def zip_code_barchart(csv_lines, save_file='barchart.jpg'):
     zipcode_columns = [28, 35, 42, 49, 56, 63, 70, 77, 84, 91, 98, 105, 112, 119, 126]
     zipcodes = []
     for line in csv_lines:
@@ -45,7 +45,7 @@ def zip_code_barchart(csv_lines):
     ax.set_title('Counts of Contractor Zip Codes')
     ax.set_xticks(index)
     ax.set_xticklabels(zip_set, rotation=45)
-    pylab.savefig('barchart.jpg')
+    pylab.savefig(save_file)
 
 def command_line():
     """Use 'latlong' or 'hist' after 'parse.py' to call a function."""
