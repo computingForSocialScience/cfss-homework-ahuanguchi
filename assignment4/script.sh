@@ -1,2 +1,2 @@
 wc -l permits.csv
-grep "Hyde Park" permits.csv > permits_hydepark.csv
+grep --ignore-case "HYDE PARK" permits.csv > permits_hydepark.csv

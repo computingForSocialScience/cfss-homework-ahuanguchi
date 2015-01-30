@@ -40,12 +40,14 @@ def zip_code_barchart(csv_lines, save_file='barchart.jpg'):
     zip_counts = [zipcodes.count(zip) for zip in zip_set]
     index = range(1, len(zip_set) + 1)
     fig = pylab.figure()
+    fig.set_size_inches(18, 9)
     ax = fig.add_subplot(111)
+    ax.tick_params(axis='x', labelsize=10)
     ax.bar(index, zip_counts)
     ax.set_title('Counts of Contractor Zip Codes')
     ax.set_xticks(index)
-    ax.set_xticklabels(zip_set, rotation=45)
-    pylab.savefig(save_file)
+    ax.set_xticklabels(zip_set, rotation=60)
+    fig.savefig(save_file)
 
 def command_line():
     """Use 'latlong' or 'hist' after 'parse.py' to call a function."""
