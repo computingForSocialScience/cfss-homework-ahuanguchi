@@ -18,9 +18,11 @@ def readCSV(filename):
 ### enter your code below
 
 def get_avg_latlng(csv_lines):
-    all_lat = [float(line[128]) for line in csv_lines]
-    all_long = [float(line[129]) for line in csv_lines]
-    num_lines = len(csv_lines)
+    all_lat = [float(line[128]) for line in csv_lines
+               if line[128] != '' and line[128][-1].isdigit()]
+    all_long = [float(line[129]) for line in csv_lines
+                if line[129] != '' and line[129][-1].isdigit()]
+    num_lines = len(all_lat)
     avg_lat = sum(all_lat) / num_lines
     avg_long = sum(all_long) / num_lines
     print('Average latitude, longitude: %s, %s' % (avg_lat, avg_long))
