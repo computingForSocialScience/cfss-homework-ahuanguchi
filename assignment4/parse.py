@@ -33,7 +33,7 @@ def zip_code_barchart(csv_lines, save_file='barchart.jpg'):
     for line in csv_lines:
         for column in zipcode_columns:
             zipcode = line[column]
-            if zipcode != '' and zipcode[1].isdigit():
+            if zipcode != '' and zipcode[0].isdigit():
                 zipcode = zipcode[:5]
                 zipcodes.append(zipcode)
     zip_set = sorted(set(zipcodes))    # sorted list of unique zip codes
@@ -44,7 +44,7 @@ def zip_code_barchart(csv_lines, save_file='barchart.jpg'):
     ax = fig.add_subplot(111)
     ax.tick_params(axis='x', labelsize=10)
     ax.bar(index, zip_counts)
-    ax.set_title('Counts of Contractor Zip Codes')
+    ax.set_title('Counts of Contractor Zip Codes in permits_hydepark.csv')
     ax.set_xticks(index)
     ax.set_xticklabels(zip_set, rotation=60)
     fig.savefig(save_file)
