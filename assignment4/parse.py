@@ -35,8 +35,7 @@ def zip_code_barchart(csv_lines, save_file='barchart.jpg'):
         for column in zipcode_columns:
             zipcode = line[column]
             if zipcode != '' and zipcode[0].isdigit():
-                zipcode = zipcode[:5]
-                zipcodes.append(zipcode)
+                zipcodes.append(zipcode[:5])    # remove everything after first 5 characters
     zip_set = sorted(set(zipcodes))    # sorted list of unique zip codes
     zip_counts = [zipcodes.count(zipcode) for zipcode in zip_set]
     index = range(1, len(zip_set) + 1)
@@ -54,10 +53,9 @@ def command_line():
     """Use 'latlong' or 'hist' after 'parse.py' to call a function."""
     try:
         command = sys.argv[1]
+        permits = readCSV('permits_hydepark.csv')
     except IndexError:
-        print("Use 'latlong' or 'hist' after 'parse.py' to call a function.")
-        return
-    permits = readCSV('permits_hydepark.csv')
+        command = None
     if command == 'latlong':
         get_avg_latlng(permits)
     elif command == 'hist':
