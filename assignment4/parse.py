@@ -18,14 +18,15 @@ def readCSV(filename):
 ### enter your code below
 
 def get_avg_latlng(csv_lines):
-    all_lat = [float(line[128]) for line in csv_lines
-               if line[128] != '' and line[128][-1].isdigit()]
-    all_long = [float(line[129]) for line in csv_lines
-                if line[129] != '' and line[129][-1].isdigit()]
-    num_lines = len(all_lat)
-    avg_lat = sum(all_lat) / num_lines
-    avg_long = sum(all_long) / num_lines
-    print('Average latitude, longitude: %s, %s' % (avg_lat, avg_long))
+    all_lat, all_long = [], []
+    for line in csv_lines:
+        if line[128] != '' and line[128][-1].isdigit():
+            all_lat.append(float(line[128]))
+        if line[129] != '' and line[129][-1].isdigit():
+            all_long.append(float(line[129]))
+    avg_lat = sum(all_lat) / len(all_lat)
+    avg_long = sum(all_long) / len(all_long)
+    print('Average latitude and longitude: (%s, %s)' % (avg_lat, avg_long))
 
 def zip_code_barchart(csv_lines, save_file='barchart.jpg'):
     zipcode_columns = [28, 35, 42, 49, 56, 63, 70, 77, 84, 91, 98, 105, 112, 119, 126]
@@ -60,7 +61,8 @@ def command_line():
     if command == 'latlong':
         get_avg_latlng(permits)
     elif command == 'hist':
-        zip_code_barchart(permits)
+        file = sys.argv[2] if (len(sys.argv) >= 3) else 'barchart.jpg'
+        zip_code_barchart(permits, file)
         print('Bar chart created!')
     else:
         print("Use 'latlong' or 'hist' after 'parse.py' to call a function.")
