@@ -28,7 +28,8 @@ def get_avg_latlng(csv_lines):
     avg_long = sum(all_long) / len(all_long)
     print('Average latitude and longitude: (%s, %s)' % (avg_lat, avg_long))
 
-def zip_code_barchart(csv_lines, save_file='barchart.jpg'):
+def zip_code_barchart(csv_lines, save_file='barchart.jpg',
+                      additional_info=' in permits_hydepark.csv'):
     zipcode_columns = [28, 35, 42, 49, 56, 63, 70, 77, 84, 91, 98, 105, 112, 119, 126]
     zipcodes = []
     for line in csv_lines:
@@ -44,7 +45,7 @@ def zip_code_barchart(csv_lines, save_file='barchart.jpg'):
     ax = fig.add_subplot(111)
     ax.tick_params(axis='x', labelsize=10)
     ax.bar(index, zip_counts)
-    ax.set_title('Counts of Contractor Zip Codes in permits_hydepark.csv')
+    ax.set_title('Counts of Contractor Zip Codes' + additional_info)
     ax.set_xticks(index)
     ax.set_xticklabels(zip_set, rotation=60)
     fig.savefig(save_file)
@@ -53,14 +54,16 @@ def command_line():
     """Use 'latlong' or 'hist' after 'parse.py' to call a function."""
     try:
         command = sys.argv[1]
-        permits = readCSV('permits_hydepark.csv')
+        csv_file = sys.argv[2] if (len(sys.argv) >= 3) else 'permits_hydepark.csv'
+        permits = readCSV(csv_file)
     except IndexError:
         command = None
     if command == 'latlong':
         get_avg_latlng(permits)
     elif command == 'hist':
-        file = sys.argv[2] if (len(sys.argv) >= 3) else 'barchart.jpg'
-        zip_code_barchart(permits, file)
+        file = sys.argv[3] if (len(sys.argv) >= 4) else 'barchart.jpg'
+        info = sys.argv[4] if (len(sys.argv) >= 5) else ' in permits_hydepark.csv'
+        zip_code_barchart(permits, file, info)
         print('Bar chart created!')
     else:
         print("Use 'latlong' or 'hist' after 'parse.py' to call a function.")
