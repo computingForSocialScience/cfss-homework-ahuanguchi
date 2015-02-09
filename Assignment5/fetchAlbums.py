@@ -1,8 +1,6 @@
 import requests
 from datetime import datetime
 
-# https://api.spotify.com/v1/albums/0sNOF9WDwhWunNAHPD3Baj
-
 def fetchAlbumIds(artist_id):
     """Using the Spotify API, take an artist ID and 
     returns a list of album IDs in a list
