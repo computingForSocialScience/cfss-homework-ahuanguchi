@@ -1,5 +1,5 @@
-import unicodecsv as csv                # allows access to unicodecsv with the name csv
-import matplotlib.pyplot as plt         # allows access to matplotlib.pyplot with the name plt
+import unicodecsv as csv                # allows access to the module unicodecsv using the name csv
+import matplotlib.pyplot as plt         # allows access to the module matplotlib.pyplot using the name plt
 
 def getBarChartData():
     f_artists = open('artists.csv')     # opens the file 'artists.csv' in read mode
@@ -40,12 +40,12 @@ def getBarChartData():
 def plotBarChart():
     x_vals, y_vals, artist_names = getBarChartData() # calls the above function and assigns its three returned values to variables
     
-    fig , ax = plt.subplots(1,1)        # 
-    ax.bar(x_vals, y_vals, width=10)    #
-    ax.set_xlabel('decades')            #
-    ax.set_ylabel('number of albums')   #
-    ax.set_title('Totals for ' + ', '.join(artist_names))   #
-    plt.show()                          #
+    fig , ax = plt.subplots(1,1)        # creates a figure with one subplot and assigns the figure and axis objects to variables
+    ax.bar(x_vals, y_vals, width=10)    # creates a bar graph with decades as x values and counts of albums as y values, setting each bar's width to 10
+    ax.set_xlabel('decades')            # gives the x-axis the label 'decades'
+    ax.set_ylabel('number of albums')   # gives the y-axis the label 'number of albums'
+    ax.set_title('Totals for ' + ', '.join(artist_names))   # gives the bar graph a title that says 'Totals for ' then lists the artists in artist_names
+    plt.show()                          # opens the resulting figure in a new window
 
 
     
