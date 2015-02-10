@@ -7,7 +7,7 @@ def writeArtistsTable(artist_info_list):
     The csv file should have a header line that looks like this:
     ARTIST_ID,ARTIST_NAME,ARTIST_FOLLOWERS,ARTIST_POPULARITY
     """
-    f = open('artists.csv', 'w')
+    f = open('artists.csv', 'w', encoding='utf-8')
     try:
         f.write(u'ARTIST_ID,ARTIST_NAME,ARTIST_FOLLOWERS,ARTIST_POPULARITY\n')
         for artist_info in artist_info_list:
@@ -28,16 +28,16 @@ def writeAlbumsTable(album_info_list):
     The csv file should have a header line that looks like this:
     ARTIST_ID,ALBUM_ID,ALBUM_NAME,ALBUM_YEAR,ALBUM_POPULARITY
     """
-    f = open('albums.csv', 'w')
+    f = open('albums.csv', 'w', encoding='utf-8')
     try:
-        f.write(u'ARTIST_ID,ALBUM_ID,ALBUM_NAME,ALBUM_YEAR,ALBUM_POPULARITY')
+        f.write(u'ARTIST_ID,ALBUM_ID,ALBUM_NAME,ALBUM_YEAR,ALBUM_POPULARITY\n')
         for album_info in album_info_list:
             artist_id = album_info['artist_id']
             album_id = album_info['album_id']
             name = album_info['name']
             year = album_info['year']
             popularity = album_info['popularity']
-            f.write(u'%s,%s,"%s",%s,%s' % (artist_id, album_id, name, year, popularity))
+            f.write(u'%s,%s,"%s",%s,%s\n' % (artist_id, album_id, name, year, popularity))
     finally:
         f.close()
         

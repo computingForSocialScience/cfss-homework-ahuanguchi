@@ -12,7 +12,8 @@ def fetchArtistId(name):
     assert req.ok, 'No record found.'
     dct = req.json()
     assert dct.get('artists').get('items'), 'Artist not found.'
-    return dct['artists']['items'][0]['id']
+    artist_id = dct['artists']['items'][0]['id']
+    return artist_id
 
 def fetchArtistInfo(artist_id):
     """Using the Spotify API, takes a string representing the id and
