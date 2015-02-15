@@ -15,14 +15,16 @@ def getDepthEdges(artistID, depth):
     now_completed = 0
     for i in range(depth - 1):
         completed = now_completed
+        completed_artists = set(x[0] for x in pairs[:completed])
         new_pairs = []
         for pair in pairs[completed:]:
+            now_completed += 1
             artist = pair[1]
+            if artist in completed_artists:
+                continue
             current_pairs = set(pairs + new_pairs)
             new_pairs += [(artist, x) for x in getRelatedArtists(artist)
-                          if (artist, x) not in current_pairs
-                          and (x, artist) not in current_pairs]
-            now_completed += 1
+                          if (artist, x) not in current_pairs]
         pairs += new_pairs
     return pairs
 
@@ -33,5 +35,5 @@ def getEdgeList(artistID, depth):
 
 def writeEdgeList(artistID, depth, filename):
     df = getEdgeList(artistID, depth)
-    df.to_csv(filename, index=False, header=False)
+    df.to_csv(filename, index=None, header=['artist1', 'artist2'])
     
