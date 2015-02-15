@@ -25,12 +25,20 @@ if __name__ == '__main__':
         next_edge_list = edge_lists[i]
         combined = combineEdgeLists(combined, next_edge_list)
     g = pandasToNetworkX(combined)
-    playlist_artist_ids = [randomCentralNode(g) for i in range(30)]
+    
     playlist_artists = []
     playlist_album_ids = []
-    for artist in playlist_artist_ids:
+    for i in range(30):
+        albums_exist = False
+        artist = randomCentralNode(g)
+        while not albums_exist:
+            try:
+                playlist_album_ids.append(random.choice(fetchAlbumIds(artist)))
+                albums_exist = True
+            except AssertionError:
+                artist = randomCentralNode(g)
         playlist_artists.append(fetchArtistInfo(artist)['name'])
-        playlist_album_ids.append(random.choice(fetchAlbumIds(artist)))
+
     playlist_albums = []
     playlist_tracks = []
     for album in playlist_album_ids:
