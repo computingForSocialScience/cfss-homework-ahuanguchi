@@ -35,5 +35,4 @@ def getEdgeList(artistID, depth):
 
 def writeEdgeList(artistID, depth, filename):
     df = getEdgeList(artistID, depth)
-    df.to_csv(filename, index=None, header=['artist1', 'artist2'])
-    
+    df.to_csv(filename, index=False, header=['artist1', 'artist2'])
