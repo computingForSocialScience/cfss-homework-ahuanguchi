@@ -48,4 +48,4 @@ if __name__ == '__main__':
     with io.open('playlist.csv', 'w', encoding='utf-8') as f:
         f.write(u'artist_name,album_name,track_name\n')
         for x, y, z in table:
-            f.write(u'"%s","%s","%s"\n' % (x, y ,z))
+            f.write(u'"%s","%s","%s"\n' % (x, y, z))
