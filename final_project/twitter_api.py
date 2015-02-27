@@ -1,4 +1,4 @@
-import json, tweepy
+import json, tweepy, pymysql
 
 # keys saved separately in gitignored file for security reasons
 with open('auth.json', 'r') as f:
