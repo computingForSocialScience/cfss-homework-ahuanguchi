@@ -3,8 +3,8 @@ USE cfss;
 DROP TABLE IF EXISTS tweets;
 CREATE TABLE tweets (
     id BIGINT,
-    text VARCHAR(140),
-    created_at VARCHAR(40),
+    tweet_text VARCHAR(140),
+    created_at DATETIME,
     place VARCHAR(40),
     favorite_count INT UNSIGNED,
     retweet_count INT UNSIGNED,
