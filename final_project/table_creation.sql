@@ -8,7 +8,7 @@ CREATE TABLE tweets (
     place VARCHAR(40),
     favorite_count INT UNSIGNED,
     retweet_count INT UNSIGNED,
-    sentiment VARCHAR(20),
+    sentiment DOUBLE,
     search_term VARCHAR(20),
     PRIMARY KEY (id)
 );

@@ -1,4 +1,5 @@
-import json, tweepy
+import json, tweepy, pymysql
+from vaderSentiment.vaderSentiment import sentiment
 
 # keys saved separately in gitignored file for security reasons
 with open('auth.json', 'r') as f:
@@ -24,21 +25,22 @@ def scrape_tweets(api, name):
     entities_table = []
     
     for tweet in user_tweets:
-        tweet_info = []
-        tweet_info.append(tweet.id)
-        tweet_info.append(tweet.text)
-        tweet_info.append(str(tweet.created_at))
-        tweet_info.append(tweet.place)
-        tweet_info.append(tweet.favorite_count)
-        tweet_info.append(tweet.retweet_count)
-        tweet_info.append('')       # placeholder for sentiment
-        tweet_info.append(name)
-        extra_info = []
-        extra_info.append(tweet.id)
-        extra_info.append([x['text'] for x in tweet.entities['hashtags']])
-        extra_info.append([x['screen_name'] for x in tweet.entities['user_mentions']])
-        extra_info.append([x['url'] for x in tweet.entities['urls']])
-        
+        tweet_info = (
+            tweet.id,
+            tweet.text,
+            str(tweet.created_at),
+            tweet.place,
+            tweet.favorite_count,
+            tweet.retweet_count,
+            sentiment(tweet.text.replace('#', '').encode('utf-8', 'ignore'))['compound'],
+            name
+        )
+        extra_info = (
+            tweet.id,
+            [x['text'] for x in tweet.entities['hashtags']],
+            [x['screen_name'] for x in tweet.entities['user_mentions']],
+            [x['url'] for x in tweet.entities['urls']]
+        )
         tweets_table.append(tweet_info)
         entities_table.append(extra_info)
     
@@ -48,6 +50,9 @@ def write_to_json(filename, tweets_table, entities_table):
     with open(filename, 'w') as f:
         dct = {'tweets_table': tweets_table, 'entities_table': entities_table}
         json.dump(dct, f)
+
+def write_to_mysql(cursor, tweets_table, entities_table):
+    pass
 
 if __name__ == '__main__':
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
