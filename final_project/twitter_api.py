@@ -1,4 +1,4 @@
-import json, tweepy, pymysql
+import json, tweepy, string, pymysql
 from vaderSentiment.vaderSentiment import sentiment
 
 # keys saved separately in gitignored file for security reasons
@@ -10,6 +10,9 @@ access_token = saved['access_token']
 access_token_secret = saved['access_token_secret']
 
 def scrape_tweets(api, name):
+    uppers = set(string.ascii_uppercase)
+    special_chars = ('#', '@', '/')
+    
     user_tweets = []
     tweets = api.user_timeline(screen_name=name, count=200)
     user_tweets.extend(tweets)
@@ -32,8 +35,16 @@ def scrape_tweets(api, name):
             tweet.place,
             tweet.favorite_count,
             tweet.retweet_count,
+            name,
             sentiment(tweet.text.replace('#', '').encode('utf-8', 'ignore'))['compound'],
-            name
+            int(
+                all(
+                    x[0] in uppers for x in tweet.text.split() if all(
+                        y not in x for y in special_chars
+                    )
+                )
+            ),
+            int(bool(tweet.startswith('RT @')))
         )
         extra_info = (
             tweet.id,
