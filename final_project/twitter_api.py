@@ -1,4 +1,4 @@
-import json, tweepy, string, pymysql
+import json, tweepy, string
 from vaderSentiment.vaderSentiment import sentiment
 
 # keys saved separately in gitignored file for security reasons
@@ -9,42 +9,32 @@ consumer_secret = saved['consumer_secret']
 access_token = saved['access_token']
 access_token_secret = saved['access_token_secret']
 
-def scrape_tweets(api, name):
+def scrape_tweets(api, term):
     uppers = set(string.ascii_uppercase)
-    special_chars = ('#', '@', '/')
     
-    user_tweets = []
-    tweets = api.user_timeline(screen_name=name, count=200)
-    user_tweets.extend(tweets)
-    limit_id = user_tweets[-1].id - 1
-    while True:
-        tweets = api.user_timeline(screen_name=name, count=200, max_id=limit_id)
-        if len(tweets) == 0:
-            break
-        user_tweets.extend(tweets)
-        limit_id = user_tweets[-1].id - 1
+    all_tweets = tweepy.Cursor(api.search, q=term, count=100, until='2015-02-28', lang='en').items(18000)
+    # all_tweets = tweepy.Cursor(api.user_timeline, screen_name=term, count=200).items()
     
     tweets_table = []
     entities_table = []
     
-    for tweet in user_tweets:
+    for tweet in all_tweets:
         tweet_info = (
             tweet.id,
             tweet.text,
             str(tweet.created_at),
-            tweet.place,
+            tweet.place.full_name if tweet.place else None,
             tweet.favorite_count,
             tweet.retweet_count,
-            name,
+            term,
             sentiment(tweet.text.replace('#', '').encode('utf-8', 'ignore'))['compound'],
             int(
                 all(
-                    x[0] in uppers for x in tweet.text.split() if all(
-                        y not in x for y in special_chars
-                    ) and not x[0].isdigit()
+                    x[0] in uppers for x in tweet.text.split()
+                    if x[0].isalpha() and '/' not in x
                 )
             ),
-            int(bool(tweet.text.startswith('RT @')))
+            int(tweet.text.startswith('RT @'))
         )
         extra_info = (
             tweet.id,
@@ -62,13 +52,20 @@ def write_to_json(filename, tweets_table, entities_table):
         dct = {'tweets_table': tweets_table, 'entities_table': entities_table}
         json.dump(dct, f)
 
-def write_to_mysql(cursor, tweets_table, entities_table):
-    pass
-
 if __name__ == '__main__':
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
     api = tweepy.API(auth)
     
-    jaden_tweets, jaden_entities = scrape_tweets(api, 'officialjaden')
-    write_to_json('jaden.json', jaden_tweets, jaden_entities)
+    # print(api.rate_limit_status()['resources']['statuses']['/statuses/user_timeline'])
+    # jaden_tweets, jaden_entities = scrape_tweets(api, 'officialjaden')
+    # print(len(jaden_tweets))
+    # write_to_json('jaden.json', jaden_tweets, jaden_entities)
+    try:
+        print(api.rate_limit_status()['resources']['search'])
+        tweets, entities = scrape_tweets(api, 'Python')
+        print(len(tweets))
+        write_to_json('python_tweets.json', tweets, entities)
+    finally:
+        print(api.rate_limit_status()['resources']['search'])
+

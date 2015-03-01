@@ -12,7 +12,11 @@ CREATE TABLE tweets (
     sentiment DECIMAL(5, 4),
     jaden_cap TINYINT(1),
     retweeted TINYINT(1),
-    PRIMARY KEY (id)
+    PRIMARY KEY (id),
+    INDEX (search_term),
+    INDEX (created_at),
+    INDEX (place),
+    INDEX (sentiment)
 );
 
 DROP TABLE IF EXISTS entities;
