@@ -41,10 +41,10 @@ def scrape_tweets(api, name):
                 all(
                     x[0] in uppers for x in tweet.text.split() if all(
                         y not in x for y in special_chars
-                    )
+                    ) and not x[0].isdigit()
                 )
             ),
-            int(bool(tweet.startswith('RT @')))
+            int(bool(tweet.text.startswith('RT @')))
         )
         extra_info = (
             tweet.id,
