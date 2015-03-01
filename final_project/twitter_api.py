@@ -1,4 +1,4 @@
-import json, tweepy, string
+import json, tweepy, string, time
 from vaderSentiment.vaderSentiment import sentiment
 
 # keys saved separately in gitignored file for security reasons
@@ -12,7 +12,7 @@ access_token_secret = saved['access_token_secret']
 def scrape_tweets(api, term):
     uppers = set(string.ascii_uppercase)
     
-    all_tweets = tweepy.Cursor(api.search, q=term, count=100, until='2015-02-28', lang='en').items(18000)
+    all_tweets = tweepy.Cursor(api.search, q=term, count=100, lang='en').items(17900)
     # all_tweets = tweepy.Cursor(api.user_timeline, screen_name=term, count=200).items()
     
     tweets_table = []
@@ -27,7 +27,19 @@ def scrape_tweets(api, term):
             tweet.favorite_count,
             tweet.retweet_count,
             term,
-            sentiment(tweet.text.replace('#', '').encode('utf-8', 'ignore'))['compound'],
+            sentiment(tweet.text.replace(
+                          'Death', ''
+                      ).replace(
+                          'death parade', 'parade'
+                      ).replace(
+                          'Assassination', ''
+                      ).replace(
+                          'assassination classroom', 'classroom'
+                      ).replace(
+                          'Cute', ''
+                      ).replace(
+                          'cute high', 'high'
+                      ).encode('utf-8', 'ignore'))['compound'],
             int(
                 all(
                     x[0] in uppers for x in tweet.text.split()
@@ -63,9 +75,24 @@ if __name__ == '__main__':
     # write_to_json('jaden.json', jaden_tweets, jaden_entities)
     try:
         print(api.rate_limit_status()['resources']['search'])
-        tweets, entities = scrape_tweets(api, 'Python')
-        print(len(tweets))
-        write_to_json('python_tweets.json', tweets, entities)
+        
+        # search_term = 'aldnoah'     # uncomment for different search terms to avoid breaking limit
+        # search_term = 'akatsuki no yona'
+        # search_term = 'durarara'
+        # search_term = 'death parade'
+        # search_term = 'rolling girls'
+        search_term = 'sailor moon crystal'
+        # search_term = 'yuri kuma'
+        # search_term = 'assassination classroom'
+        # search_term = 'koufuku graffiti'
+        # search_term = 'cute high earth defense'
+        
+        tweets, entities = scrape_tweets(api, search_term)
+        print('tweets: %s' % len(tweets))
+        write_to_json('%s_tweets.json' % search_term.replace(' ', ''), tweets, entities)
+        
     finally:
-        print(api.rate_limit_status()['resources']['search'])
+        stats = api.rate_limit_status()['resources']['search']['/search/tweets']
+        print('remaining calls: %s' % stats['remaining'])
+        print(time.localtime(stats['reset']))
 
