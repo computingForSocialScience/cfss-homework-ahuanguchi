@@ -39,6 +39,12 @@ def scrape_tweets(api, term):
                           'Cute', ''
                       ).replace(
                           'cute high', 'high'
+                      ).replace(
+                          'Club LOVE', 'Club'
+                      ).replace(
+                          'Club Love', 'Club'
+                      ).replace(
+                          'club love', 'club'
                       ).encode('utf-8', 'ignore'))['compound'],
             int(
                 all(
@@ -81,12 +87,13 @@ if __name__ == '__main__':
         # search_term = 'durarara'
         # search_term = 'death parade'
         # search_term = 'rolling girls'
-        search_term = 'sailor moon crystal'
+        # search_term = 'sailor moon crystal'
         # search_term = 'yuri kuma'
         # search_term = 'assassination classroom'
         # search_term = 'koufuku graffiti'
-        # search_term = 'cute high earth defense'
+        search_term = 'cute high earth defense'
         
+        print(search_term)
         tweets, entities = scrape_tweets(api, search_term)
         print('tweets: %s' % len(tweets))
         write_to_json('%s_tweets.json' % search_term.replace(' ', ''), tweets, entities)
