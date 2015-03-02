@@ -7,18 +7,14 @@ def write_to_mysql(cursor, json_file):
     tweets_table = saved['tweets_table']
     entities_table = saved['entities_table']
     
-    for row in tweets_table:
-        for cell in row:
-            if isinstance(cell, str):
-                cell = cell.encode('utf-8', 'ignore')
-    for row in entities_table:
-        for cell in row[1:]:
-            cell = ', '.join(cell)
+    for i in range(len(entities_table)):
+        for j in range(1, len(entities_table[i])):
+            entities_table[i][j] = ', '.join(entities_table[i][j])
     
-    cursor.executemany('INSERT INTO tweets VALUES (' + ','.join(['%s'] * 10) + ');',
+    cursor.executemany('INSERT INTO tweets VALUES (' + ','.join(['%s'] * 10) + ')',
                        tweets_table)
-    # cursor.executemany('INSERT INTO entities VALUES (' + ','.join(['%s'] * 4) + ');',
-                       # entities_table)
+    cursor.executemany('INSERT IGNORE INTO entities VALUES (' + ','.join(['%s'] * 4) + ')',
+                       entities_table)
 
 if __name__ == '__main__':
     tweets_files = [x for x in os.listdir('.') if '_tweets' in x]
@@ -27,7 +23,8 @@ if __name__ == '__main__':
     c = db.cursor()
         
     try:
-        c.execute('TRUNCATE tweets; TRUNCATE entities;')
+        c.execute('TRUNCATE tweets;')
+        c.execute('TRUNCATE entities;')
         for tweets_file in tweets_files:
             write_to_mysql(c, tweets_file)
         db.commit()

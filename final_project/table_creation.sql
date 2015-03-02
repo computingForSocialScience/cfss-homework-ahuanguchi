@@ -22,8 +22,8 @@ CREATE TABLE tweets (
 DROP TABLE IF EXISTS entities;
 CREATE TABLE entities (
     id BIGINT,
-    hashtags VARCHAR(140),
-    urls VARCHAR(140),
-    user_mentions VARCHAR(140),
+    hashtags VARCHAR(200),
+    user_mentions VARCHAR(200),
+    urls VARCHAR(200),
     PRIMARY KEY (id)
 );
