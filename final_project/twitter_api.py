@@ -13,7 +13,6 @@ def scrape_tweets(api, term):
     uppers = set(string.ascii_uppercase)
     
     all_tweets = tweepy.Cursor(api.search, q=term, count=100, lang='en').items(17900)
-    # all_tweets = tweepy.Cursor(api.user_timeline, screen_name=term, count=200).items()
     
     tweets_table = []
     entities_table = []
@@ -60,7 +59,7 @@ def scrape_tweets(api, term):
                       ).replace(
                           'CLUB LOVE', 'CLUB'
                       ).encode('utf-8', 'ignore'))['compound'],
-            int(
+            int(                # Check For Jaden Smith-Style Capitalization
                 all(
                     x[0] in uppers for x in tweet.text.split()
                     if x[0].isalpha() and '/' not in x
@@ -72,7 +71,7 @@ def scrape_tweets(api, term):
             tweet.id,
             [x['text'] for x in tweet.entities['hashtags']],
             [x['screen_name'] for x in tweet.entities['user_mentions']],
-            [x['url'] for x in tweet.entities['urls']]
+            [x['expanded_url'] for x in tweet.entities['urls']]
         )
         tweets_table.append(tweet_info)
         entities_table.append(extra_info)
@@ -89,23 +88,19 @@ if __name__ == '__main__':
     auth.set_access_token(access_token, access_token_secret)
     api = tweepy.API(auth)
     
-    # print(api.rate_limit_status()['resources']['statuses']['/statuses/user_timeline'])
-    # jaden_tweets, jaden_entities = scrape_tweets(api, 'officialjaden')
-    # print(len(jaden_tweets))
-    # write_to_json('jaden.json', jaden_tweets, jaden_entities)
     try:
         print(api.rate_limit_status()['resources']['search'])
         
-        # search_term = 'aldnoah'     # uncomment for different case-insensitive search terms to avoid breaking limit
+        search_term = 'durarara'    # uncomment for different case-insensitive search terms to avoid breaking limit
+        # search_term = 'aldnoah zero'            # title's spacing varies
         # search_term = '"yona of the dawn" OR "akatsuki no yona"'
-        # search_term = 'durarara'
         # search_term = '"death parade"'
         # search_term = '"rolling girls"'
         # search_term = '"sailor moon crystal"'
-        # search_term = 'yuri kuma'
+        # search_term = 'yuri kuma arashi'        # title's spacing varies
         # search_term = '"assassination classroom" OR "ansatsu kyoushitsu"'
         # search_term = '"gourmet girl graffiti" OR "koufuku graffiti"'
-        search_term = '"cute high earth defense"'
+        # search_term = 'cute high earth defense club love'
         
         print(search_term)
         tweets, entities = scrape_tweets(api, search_term)

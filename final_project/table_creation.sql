@@ -24,6 +24,6 @@ CREATE TABLE entities (
     id BIGINT,
     hashtags VARCHAR(200),
     user_mentions VARCHAR(200),
-    urls VARCHAR(200),
+    urls VARCHAR(255),
     PRIMARY KEY (id)
 );

@@ -21,7 +21,7 @@ if __name__ == '__main__':
     
     db = pymysql.connect(user='root', database='cfss', charset='utf8mb4')
     c = db.cursor()
-        
+    
     try:
         c.execute('TRUNCATE tweets;')
         c.execute('TRUNCATE entities;')
