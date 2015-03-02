@@ -64,7 +64,7 @@ def scrape_tweets(api, term):
                     x[0] in uppers for x in tweet.text.split()
                     if x[0].isalpha() and '/' not in x
                 )
-            ),
+            ),                  # check if retweet
             int(tweet.text.startswith('RT @'))
         )
         extra_info = (
