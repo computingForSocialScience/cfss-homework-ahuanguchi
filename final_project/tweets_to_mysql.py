@@ -17,7 +17,7 @@ def write_to_mysql(cursor, json_file):
                        entities_table)              # each id (primary key) ends up being unique
 
 if __name__ == '__main__':
-    tweets_files = [x for x in os.listdir('.') if '_tweets' in x]
+    tweets_files = [x for x in os.listdir('.') if x.endswith('_tweets.json')]
     
     db = pymysql.connect(user='root', database='cfss', charset='utf8mb4')
     c = db.cursor()

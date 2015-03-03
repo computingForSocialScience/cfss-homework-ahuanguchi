@@ -91,7 +91,7 @@ if __name__ == '__main__':
     try:
         print(api.rate_limit_status()['resources']['search'])
         
-        search_term = 'durarara'    # uncomment for different case-insensitive search terms to avoid breaking limit
+        # search_term = 'durarara'    # uncomment for different case-insensitive search terms to avoid breaking limit
         # search_term = 'aldnoah zero'            # title's spacing varies
         # search_term = '"yona of the dawn" OR "akatsuki no yona"'
         # search_term = '"death parade"'
@@ -101,6 +101,7 @@ if __name__ == '__main__':
         # search_term = '"assassination classroom" OR "ansatsu kyoushitsu"'
         # search_term = '"gourmet girl graffiti" OR "koufuku graffiti"'
         # search_term = 'cute high earth defense club love'
+        search_term = 'shirobako'
         
         print(search_term)
         tweets, entities = scrape_tweets(api, search_term)

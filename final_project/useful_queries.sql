@@ -43,3 +43,12 @@ ORDER BY avg_neg_sentiment;
 SELECT HOUR(created_at) as hour_tweeted, AVG(sentiment) as avg_sentiment
 FROM tweets
 GROUP BY hour_tweeted;
+
+SELECT DAYOFWEEK(created_at) as day_tweeted, AVG(sentiment) as avg_sentiment
+FROM tweets
+GROUP BY day_tweeted;
+
+SELECT place, COUNT(*) as num_tweets
+FROM tweets
+GROUP BY place
+ORDER BY num_tweets DESC, place;
