@@ -1,10 +1,11 @@
-import json, tweepy, string, time
+import os, json, tweepy, string, time
 from vaderSentiment.vaderSentiment import sentiment
 
 # keys saved separately in gitignored file for security reasons
-with open('auth.json', 'r') as f:
-    saved = json.load(f)
-consumer_key = saved['consumer_key']
+if 'auth.json' in os.listdir('.'):
+    with open('auth.json', 'r') as f:
+        saved = json.load(f)
+consumer_key = saved['consumer_key']        # replace with your own keys if running on your own computer
 consumer_secret = saved['consumer_secret']
 access_token = saved['access_token']
 access_token_secret = saved['access_token_secret']
