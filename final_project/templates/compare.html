@@ -2,7 +2,7 @@
 
 {% block content %}
   <div class="jumbotron">
-    <h2>Comparison of {{ title1 }} and {{ title2 }} Tweets by {{ comparison }}</h2>
+    <h3>Comparison of {{ title1 }} and {{ title2 }} Tweets {{ comparison }}</h3>
     <br>
     <table>
       <tr>
@@ -18,5 +18,7 @@
         <td>{{ data2 }}</td>
       </tr>
     </table>
+    <br>
+    <a href="/">Go back</a>
   </div>
 {% endblock %}

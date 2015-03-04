@@ -36,7 +36,7 @@ app.comp_verbose = {
     'place': 'Tweet Locations'
 }
 
-def query_databse(search_term1, search_term2, comparison):
+def query_database(search_term1, search_term2, comparison):
     query = None
     if comparison == 'basic':
         query = "SELECT search_term, COUNT(*) as num_tweets " \
@@ -94,12 +94,12 @@ def compare():
     search_term1 = app.arg_to_query[show1]
     search_term2 = app.arg_to_query[show2]
     comp_full = app.comp_verbose[comparison]
-    data1, data2 = query_databse(search_term1, search_term2, comparison)
+    data1, data2 = query_database(search_term1, search_term2, comparison)
     return render_template(
         'compare.html',
         title1=title1,
         title2=title2,
-        comparison=comparison.title(),
+        comparison='by ' + comparison.title() if comparison != 'basic' else '',
         comp_full=comp_full,
         data1=data1,
         data2=data2
