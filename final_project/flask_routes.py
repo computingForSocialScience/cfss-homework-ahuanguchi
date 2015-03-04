@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, g
+import pymysql
 
 app = Flask(__name__)
 
@@ -29,10 +30,50 @@ app.arg_to_query = {
     'shirobako': 'shirobako'
 }
 app.comp_verbose = {
+    'basic': 'Number of Tweets',
     'sentiment': 'Average Sentiment (-1 to 1)',
     'time': 'Tweets Over Time',
-    'place': 'Places'
+    'place': 'Tweet Locations'
 }
+
+def query_databse(search_term1, search_term2, comparison):
+    query = None
+    if comparison == 'basic':
+        query = "SELECT search_term, COUNT(*) as num_tweets " \
+                "FROM tweets " \
+                "WHERE search_term = %s " \
+                "UNION ALL " \
+                "SELECT search_term, COUNT(*) as num_tweets " \
+                "FROM tweets " \
+                "WHERE search_term = %s;"
+    elif comparison == 'sentiment':
+        query = "SELECT search_term, AVG(sentiment) as avg_sentiment " \
+                "FROM tweets " \
+                "WHERE search_term = %s " \
+                "UNION ALL " \
+                "SELECT search_term, AVG(sentiment) as avg_sentiment " \
+                "FROM tweets " \
+                "WHERE search_term = %s;"
+    if query:
+        g.c.execute(query, (search_term1, search_term2))
+        data = tuple(x[1] for x in g.c.fetchall())
+    else:
+        data = ('', '')
+    return data
+
+@app.before_request
+def before_request():
+    g.db = pymysql.connect(user='root', database='cfss', charset='utf8mb4')
+    g.c = g.db.cursor()
+
+@app.teardown_request
+def teardown_request(exception):
+    c = getattr(g, 'c', None)
+    db = getattr(g, 'db', None)
+    if c:
+        c.close()
+    if db:
+        db.close()
 
 @app.route('/')
 def home():
@@ -53,12 +94,15 @@ def compare():
     search_term1 = app.arg_to_query[show1]
     search_term2 = app.arg_to_query[show2]
     comp_full = app.comp_verbose[comparison]
+    data1, data2 = query_databse(search_term1, search_term2, comparison)
     return render_template(
         'compare.html',
         title1=title1,
         title2=title2,
         comparison=comparison.title(),
-        comp_full=comp_full
+        comp_full=comp_full,
+        data1=data1,
+        data2=data2
     )
 
 if __name__ == '__main__':
