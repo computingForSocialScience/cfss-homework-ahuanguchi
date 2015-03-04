@@ -30,10 +30,19 @@ app.arg_to_query = {
     'shirobako': 'shirobako'
 }
 app.comp_verbose = {
-    'basic': 'Number of Tweets',
-    'sentiment': 'Average Sentiment (-1 to 1)',
-    'time': 'Tweets Over Time',
-    'place': 'Tweet Locations'
+    'sentiment': ('Average Sentiment (-1 to 1)',),
+    'time': (
+        'Tweets on 2015-02-23',
+        '02-24',
+        '02-25',
+        '02-26',
+        '02-27',
+        '02-28',
+        '03-01',
+        '03-02',
+        '03-03'
+    ),
+    'place': ('Tweet Locations',)
 }
 
 def query_database(search_term1, search_term2, comparison):
@@ -41,27 +50,37 @@ def query_database(search_term1, search_term2, comparison):
     if comparison == 'basic':
         g.c.execute("SELECT COUNT(*) FROM tweets;")
         total = g.c.fetchone()[0]
-        query = "SELECT search_term, COUNT(*) as num_tweets, (COUNT(*) / {0}) " \
-                "FROM tweets " \
-                "WHERE search_term = %s " \
-                "UNION ALL " \
-                "SELECT search_term, COUNT(*) as num_tweets, (COUNT(*) / {1}) " \
-                "FROM tweets " \
-                "WHERE search_term = %s;".format(total, total)
-    elif comparison == 'sentiment':
-        query = "SELECT search_term, AVG(sentiment) as avg_sentiment " \
-                "FROM tweets " \
-                "WHERE search_term = %s " \
-                "UNION ALL " \
-                "SELECT search_term, AVG(sentiment) as avg_sentiment " \
+        query = "SELECT COUNT(*), (COUNT(*) / %s) " \
                 "FROM tweets " \
                 "WHERE search_term = %s;"
-    if query:
-        g.c.execute(query, (search_term1, search_term2))
-        data = tuple(x[1:] for x in g.c.fetchall())
+        g.c.execute(query, (total, search_term1))
+        data1 = g.c.fetchone()
+        g.c.execute(query, (total, search_term2))
+        data2 = g.c.fetchone()
     else:
-        data = (('',), ('',))
-    return data
+        if comparison == 'sentiment':
+            query = "SELECT AVG(sentiment) " \
+                    "FROM tweets " \
+                    "WHERE search_term = %s;"
+        elif comparison == 'time':
+            query = "SELECT COUNT(*) " \
+                    "FROM tweets " \
+                    "WHERE search_term = %s " \
+                    "GROUP BY DATE(created_at);"
+        elif comparison == 'space':
+            pass
+        if query:
+            g.c.execute(query, (search_term1,))
+            data1 = tuple(x[0] for x in g.c.fetchall())
+            g.c.execute(query, (search_term2,))
+            data2 = tuple(x[0] for x in g.c.fetchall())
+    if not query:
+        data1 = ('',)
+        data2 = ('',)
+    return data1, data2
+
+def plot_data(search_term1, search_term2, labels1, labels2, data1, data2):
+    pass
 
 @app.before_request
 def before_request():
@@ -91,13 +110,16 @@ def compare():
     show1 = request.args['show1']
     show2 = request.args['show2']
     comparison = request.args['comparison']
+    
     search_term1 = app.arg_to_query[show1]      # This also completely prevents unwanted SQL queries
     search_term2 = app.arg_to_query[show2]      # in addition to pymysql's execute function sanitizing arguments.
     title1 = app.arg_to_title[show1]
     title2 = app.arg_to_title[show2]
     comp_full = app.comp_verbose[comparison]
+    
     data1, data2 = query_database(search_term1, search_term2, comparison)
     basic1, basic2 = query_database(search_term1, search_term2, 'basic')
+    
     return render_template(
         'compare.html',
         title1=title1,

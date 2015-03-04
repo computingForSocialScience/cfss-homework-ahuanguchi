@@ -7,18 +7,18 @@
     <table>
       <tr>
         <th>Show____________________</th>
-        <th>Number of Tweets__________</th>
-        <th>Percentage of Tweets Collected</th>
+        <th>Number of Tweets________</th>
+        <th>Percentage of Tweets Collected____</th>
       </tr>
       <tr>
         <td>{{ title1 }}</td>
         <td>{{ basic1[0] }}</td>
-        <td>{{ (basic1[1] * 100)|float|string + ' %' }}</td>
+        <td>{{ (basic1[1] * 100)|float }} %</td>
       </tr>
       <tr>
         <td>{{ title2 }}</td>
         <td>{{ basic2[0] }}</td>
-        <td>{{ (basic2[1] * 100)|float|string + ' %' }}</td>
+        <td>{{ (basic2[1] * 100)|float }} %</td>
         <td></td>
       </tr>
     </table>
@@ -26,15 +26,21 @@
     <table>
       <tr>
         <th>Show____________________</th>
-        <th>{{ comp_full }}</th>
+        {% for header in comp_full %}
+          <th>{{ header }}____</th>
+        {% endfor %}
       </tr>
       <tr>
         <td>{{ title1 }}</td>
-        <td>{{ data1[0] }}</td>
+        {% for cell in data1 %}
+          <td>{{ cell }}</td>
+        {% endfor %}
       </tr>
       <tr>
         <td>{{ title2 }}</td>
-        <td>{{ data2[0] }}</td>
+        {% for cell in data2 %}
+          <td>{{ cell }}</td>
+        {% endfor %}
       </tr>
     </table>
     <br>
