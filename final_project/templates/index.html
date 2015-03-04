@@ -3,6 +3,42 @@
 {% block content %}
   <div class="jumbotron">
     <h2>Welcome</h2>
-    <p>This is the home page.</p>
+    <p>Please select two shows and a type of comparison below.</p>
+    <form method="get" action="/compare">
+      <select name="show1">
+        <option value="durarara">Durarara</option>
+        <option value="aldnoah">Aldnoah Zero</option>
+        <option value="yona">Yona of the Dawn</option>
+        <option value="death">Death Parade</option>
+        <option value="rolling">Rolling Girls</option>
+        <option value="sailor">Sailor Moon Crystal</option>
+        <option value="yuri">Yuri Kuma Arashi</option>
+        <option value="assassination">Assassination Classroom</option>
+        <option value="gourmet">Gourmet Girl Graffiti</option>
+        <option value="cute">Cute High Earth Defense Club Love</option>
+        <option value="shirobako">Shirobako</option>
+      </select>
+      <select name="show2">
+        <option value="durarara">Durarara</option>
+        <option value="aldnoah">Aldnoah Zero</option>
+        <option value="yona">Yona of the Dawn</option>
+        <option value="death">Death Parade</option>
+        <option value="rolling">Rolling Girls</option>
+        <option value="sailor">Sailor Moon Crystal</option>
+        <option value="yuri">Yuri Kuma Arashi</option>
+        <option value="assassination">Assassination Classroom</option>
+        <option value="gourmet">Gourmet Girl Graffiti</option>
+        <option value="cute">Cute High Earth Defense Club Love</option>
+        <option value="shirobako">Shirobako</option>
+      </select>
+      <select name="comparison">
+        <option value="sentiment">sentiment</option>
+        <option value="time">time</option>
+        <option value="space">space</option>
+      </select>
+      <br>
+      <br>
+      <input type="submit">
+    </form>
   </div>
 {% endblock %}
