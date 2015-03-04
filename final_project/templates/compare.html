@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block content %}
+  <div class="jumbotron">
+    <h2>Comparison of {{ title1 }} and {{ title2 }} Tweets by {{ comparison }}</h2>
+    <br>
+    <table>
+      <tr>
+        <th>Show</th>
+        <th>{{ comp_full }}</th>
+      </tr>
+      <tr>
+        <td>{{ title1 }}</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td>{{ title2 }}</td>
+        <td></td>
+      </tr>
+    </table>
+  </div>
+{% endblock %}
