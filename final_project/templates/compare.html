@@ -8,17 +8,17 @@
       <tr>
         <th>Show____________________</th>
         <th>Number of Tweets__________</th>
-        <th>Proportion of Tweets Collected</th>
+        <th>Percentage of Tweets Collected</th>
       </tr>
       <tr>
         <td>{{ title1 }}</td>
         <td>{{ basic1[0] }}</td>
-        <td>{{ basic1[1] }}</td>
+        <td>{{ (basic1[1] * 100)|float|string + ' %' }}</td>
       </tr>
       <tr>
         <td>{{ title2 }}</td>
         <td>{{ basic2[0] }}</td>
-        <td>{{ basic2[1] }}</td>
+        <td>{{ (basic2[1] * 100)|float|string + ' %' }}</td>
         <td></td>
       </tr>
     </table>
@@ -38,6 +38,6 @@
       </tr>
     </table>
     <br>
-    <a href="javascript: window.history.back()">Go back</a>
+    <p><a href="javascript: window.history.back()">Go back</a></p>
   </div>
 {% endblock %}
