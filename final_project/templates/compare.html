@@ -6,40 +6,39 @@
     <br>
     <table>
       <tr>
-        <th>Show____________________</th>
-        <th>Number of Tweets________</th>
-        <th>Percentage of Tweets Collected____</th>
+        <th>Show</th>
+        <th>Number of Tweets</th>
+        <th>Percentage of Tweets Collected</th>
       </tr>
       <tr>
         <td>{{ title1 }}</td>
-        <td>{{ basic1[0] }}</td>
-        <td>{{ (basic1[1] * 100)|float }} %</td>
+        <td class="num">{{ basic1[0] }}</td>
+        <td class="num">{{ (basic1[1] * 100)|float }} %</td>
       </tr>
       <tr>
         <td>{{ title2 }}</td>
-        <td>{{ basic2[0] }}</td>
-        <td>{{ (basic2[1] * 100)|float }} %</td>
-        <td></td>
+        <td class="num">{{ basic2[0] }}</td>
+        <td class="num">{{ (basic2[1] * 100)|float }} %</td>
       </tr>
     </table>
     <br>
     <table>
       <tr>
-        <th>Show____________________</th>
+        <th>Show</th>
         {% for header in comp_full %}
-          <th>{{ header }}____</th>
+          <th>{{ header }}</th>
         {% endfor %}
       </tr>
       <tr>
         <td>{{ title1 }}</td>
         {% for cell in data1 %}
-          <td>{{ cell }}</td>
+          <td class="num">{{ cell }}</td>
         {% endfor %}
       </tr>
       <tr>
         <td>{{ title2 }}</td>
         {% for cell in data2 %}
-          <td>{{ cell }}</td>
+          <td class="num">{{ cell }}</td>
         {% endfor %}
       </tr>
     </table>

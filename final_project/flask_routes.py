@@ -45,7 +45,7 @@ app.comp_verbose = {
     'place': ('Tweet Locations',)
 }
 
-def query_database(search_term1, search_term2, comparison):
+def query_database(comparison, search_term1, search_term2):
     query = None
     if comparison == 'basic':
         g.c.execute("SELECT COUNT(*) FROM tweets;")
@@ -79,7 +79,7 @@ def query_database(search_term1, search_term2, comparison):
         data2 = ('',)
     return data1, data2
 
-def plot_data(search_term1, search_term2, labels1, labels2, data1, data2):
+def plot_data(comparison, search_term1, search_term2, labels1, labels2, data1, data2):
     pass
 
 @app.before_request
@@ -117,8 +117,8 @@ def compare():
     title2 = app.arg_to_title[show2]
     comp_full = app.comp_verbose[comparison]
     
-    data1, data2 = query_database(search_term1, search_term2, comparison)
-    basic1, basic2 = query_database(search_term1, search_term2, 'basic')
+    data1, data2 = query_database(comparison, search_term1, search_term2)
+    basic1, basic2 = query_database('basic', search_term1, search_term2)
     
     return render_template(
         'compare.html',

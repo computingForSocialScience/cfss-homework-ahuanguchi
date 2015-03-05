@@ -1,0 +1,12 @@
+table {
+  background-color: #ddf;
+}
+
+th, td {
+  border: 2px solid #333;
+  padding: 10px;
+}
+
+td.num {
+  text-align: right;
+}
