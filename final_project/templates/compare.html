@@ -22,26 +22,31 @@
       </tr>
     </table>
     <br>
-    <table>
-      <tr>
-        <th>Show</th>
-        {% for header in comp_full %}
-          <th>{{ header }}</th>
-        {% endfor %}
-      </tr>
-      <tr>
-        <td>{{ title1 }}</td>
-        {% for cell in data1 %}
-          <td class="num">{{ cell }}</td>
-        {% endfor %}
-      </tr>
-      <tr>
-        <td>{{ title2 }}</td>
-        {% for cell in data2 %}
-          <td class="num">{{ cell }}</td>
-        {% endfor %}
-      </tr>
-    </table>
+    {% if comparison != 'by Place' %}
+      <table>
+        <tr>
+          <th>Show</th>
+          {% for header in comp_full %}
+            <th>{{ header }}</th>
+          {% endfor %}
+        </tr>
+        <tr>
+          <td>{{ title1 }}</td>
+          {% for cell in data1 %}
+            <td class="num">{{ cell }}</td>
+          {% endfor %}
+        </tr>
+        <tr>
+          <td>{{ title2 }}</td>
+          {% for cell in data2 %}
+            <td class="num">{{ cell }}</td>
+          {% endfor %}
+        </tr>
+      </table>
+    {% else %}
+      <br>
+      <p>Place comparison coming soon<p>
+    {% endif %}
     <br>
     <p><a href="javascript: window.history.back()">Go back</a></p>
   </div>
