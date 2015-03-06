@@ -22,8 +22,6 @@
       </tr>
     </table>
     <br>
-    {{ fig_div|safe }}
-    <br>
     {% if comparison != 'by Place' %}
       <table class="notchart">
         <tr>
@@ -49,6 +47,8 @@
       <br>
       <p>Place comparison coming soon<p>
     {% endif %}
+    <br>
+    {{ fig_div|safe }}
     <br>
     <p><a href="javascript: window.history.back()">Go back</a></p>
   </div>

@@ -36,15 +36,15 @@ app.arg_to_query = {
 app.comp_verbose = {
     'sentiment': ('Average Sentiment (-1 to 1)',),
     'time': (
-        'Tweets on 2015-02-23',
-        '02-24',
-        '02-25',
-        '02-26',
-        '02-27',
-        '02-28',
-        '03-01',
-        '03-02',
-        '03-03'
+        'Tweets on 2015-02-23 (Mon)',
+        '02-24 (Tue)',
+        '02-25 (Wed)',
+        '02-26 (Thu)',
+        '02-27 (Fri)',
+        '02-28 (Sat)',
+        '03-01 (Sun)',
+        '03-02 (Mon)',
+        '03-03 (Tue)'
     ),
     'place': ('Tweet Locations',)
 }
