@@ -1,5 +1,9 @@
 from flask import Flask, render_template, request, redirect, g
 import pymysql
+from bokeh.plotting import figure
+from bokeh.charts import Bar
+from bokeh.resources import CDN
+from bokeh.embed import components
 
 app = Flask(__name__)
 
@@ -45,6 +49,20 @@ app.comp_verbose = {
     'place': ('Tweet Locations',)
 }
 
+@app.before_request
+def before_request():
+    g.db = pymysql.connect(user='root', database='cfss', charset='utf8mb4')
+    g.c = g.db.cursor()
+
+@app.teardown_request
+def teardown_request(exception):
+    c = getattr(g, 'c', None)
+    db = getattr(g, 'db', None)
+    if c:
+        c.close()
+    if db:
+        db.close()
+
 def query_database(comparison, search_term1, search_term2):
     query = None
     if comparison == 'basic':
@@ -79,22 +97,13 @@ def query_database(comparison, search_term1, search_term2):
         data2 = ('',)
     return data1, data2
 
-def plot_data(comparison, search_term1, search_term2, labels1, labels2, data1, data2):
-    pass
-
-@app.before_request
-def before_request():
-    g.db = pymysql.connect(user='root', database='cfss', charset='utf8mb4')
-    g.c = g.db.cursor()
-
-@app.teardown_request
-def teardown_request(exception):
-    c = getattr(g, 'c', None)
-    db = getattr(g, 'db', None)
-    if c:
-        c.close()
-    if db:
-        db.close()
+def plot_data(comparison, title1, title2, data1, data2): # labels1, labels2, 
+    if comparison == 'sentiment':
+        bar_chart = Bar([float(data1[0]), float(data2[0])], [title1, title2])
+        fig_js, fig_div = components(bar_chart, CDN)
+    else:
+        fig_js, fig_div = '', ''
+    return fig_js, fig_div
 
 @app.route('/')
 def home():
@@ -120,6 +129,8 @@ def compare():
     data1, data2 = query_database(comparison, search_term1, search_term2)
     basic1, basic2 = query_database('basic', search_term1, search_term2)
     
+    fig_js, fig_div = plot_data(comparison, title1, title2, data1, data2)
+    
     return render_template(
         'compare.html',
         title1=title1,
@@ -129,7 +140,9 @@ def compare():
         data1=data1,
         data2=data2,
         basic1=basic1,
-        basic2=basic2
+        basic2=basic2,
+        fig_js=fig_js,
+        fig_div=fig_div
     )
 
 if __name__ == '__main__':

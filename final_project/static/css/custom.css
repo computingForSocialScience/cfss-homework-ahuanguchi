@@ -1,12 +1,12 @@
-table {
+table.notchart {
   background-color: #ddf;
 }
 
-th, td {
+table.notchart th, table.notchart td {
   border: 2px solid #333;
   padding: 10px;
 }
 
-td.num {
+table.notchart td.num {
   text-align: right;
 }
