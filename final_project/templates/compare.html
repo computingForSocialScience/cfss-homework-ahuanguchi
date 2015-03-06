@@ -1,5 +1,11 @@
 {% extends "layout.html" %}
 
+{% block plot_resources%}
+  <link rel="stylesheet" href="http://cdn.pydata.org/bokeh-0.7.1.min.css">
+  <script type="text/javascript" src="http://cdn.pydata.org/bokeh-0.7.1.min.js"></script>
+  {{ fig_js|safe }}
+{% endblock %}
+
 {% block content %}
   <div class="jumbotron">
     <h3>Comparison of {{ title1 }} and {{ title2 }} Tweets {{ comparison }}</h3>
@@ -52,6 +58,4 @@
     <br>
     <p><a href="javascript: window.history.back()">Go back</a></p>
   </div>
-  <script type="text/javascript" src="http://cdn.pydata.org/bokeh-0.7.1.min.js"></script>
-  {{ fig_js|safe }}
 {% endblock %}
