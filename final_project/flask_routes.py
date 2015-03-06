@@ -97,10 +97,25 @@ def query_database(comparison, search_term1, search_term2):
         data2 = ('',)
     return data1, data2
 
-def plot_data(comparison, title1, title2, data1, data2): # labels1, labels2, 
+def plot_data(comparison, title1, title2, data1, data2):
     if comparison == 'sentiment':
-        bar_chart = Bar([float(data1[0]), float(data2[0])], [title1, title2])
+        bar_chart = Bar(
+            [float(data1[0]), float(data2[0])], [title1, title2],
+            xlabel='Show', ylabel='Average Sentiment (-1 to 1)'
+        )
         fig_js, fig_div = components(bar_chart, CDN)
+    elif comparison == 'time':
+        x_vals = (
+            [app.comp_verbose[comparison][0].replace('Tweets on ', '')]
+            + list(app.comp_verbose[comparison])[1:]
+        )
+        p = figure(
+            title='', x_range=x_vals, x_axis_label='Day', y_axis_label='Tweets'
+        )
+        p.line(x_vals, data1, legend=title1, line_color='red')
+        p.line(x_vals, data2, legend=title2)
+        p.xaxis.major_label_orientation = 3.14 / 3
+        fig_js, fig_div = components(p, CDN)
     else:
         fig_js, fig_div = '', ''
     return fig_js, fig_div
