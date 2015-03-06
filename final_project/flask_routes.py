@@ -36,7 +36,7 @@ app.arg_to_query = {
 app.comp_verbose = {
     'sentiment': ('Average Sentiment (-1 to 1)',),
     'time': (
-        'Tweets on 2015-02-23 (Mon)',
+        '2015-02-23 (Mon)',
         '02-24 (Tue)',
         '02-25 (Wed)',
         '02-26 (Thu)',
@@ -105,15 +105,14 @@ def plot_data(comparison, title1, title2, data1, data2):
         )
         fig_js, fig_div = components(bar_chart, CDN)
     elif comparison == 'time':
-        x_vals = (
-            [app.comp_verbose[comparison][0].replace('Tweets on ', '')]
-            + list(app.comp_verbose[comparison])[1:]
-        )
+        x_vals = list(app.comp_verbose[comparison][:-1])
         p = figure(
-            title='', x_range=x_vals, x_axis_label='Day', y_axis_label='Tweets'
+            title='', x_range=x_vals, x_axis_label='Day',
+            y_axis_label='Number of Tweets'
         )
-        p.line(x_vals, data1, legend=title1, line_color='red')
-        p.line(x_vals, data2, legend=title2)
+        p.line(x_vals, data1[:-1], legend=title1, line_color='red')
+        p.line(x_vals, data2[:-1], legend=title2)
+        p.legend.orientation = "top_left"
         p.xaxis.major_label_orientation = 3.14 / 3
         fig_js, fig_div = components(p, CDN)
     else:
