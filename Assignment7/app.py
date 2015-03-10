@@ -80,27 +80,31 @@ def createNewPlaylist(root_artist):
         "INSERT INTO songs VALUES (%s, %s, %s, %s, %s);",
         songs_table
     )
-    
     db.commit()
 
 @app.route('/')
 def make_index_resp():
     # this function just renders templates/index.html when
     # someone goes to http://127.0.0.1:5000/
+    
     return(render_template('index.html'))
 
 
 @app.route('/playlists/')
 def make_playlists_resp():
-    return render_template('playlists.html',playlists=playlists)
+    c.execute("""
+        SELECT * FROM playlists;
+    """)
+    playlists = c.fetchall()
+    return render_template('playlists.html', playlists=playlists)
 
 
 @app.route('/playlist/<playlistId>')
 def make_playlist_resp(playlistId):
-    return render_template('playlist.html',songs=songs)
+    return render_template('playlist.html', songs=songs)
 
 
-@app.route('/addPlaylist/',methods=['GET','POST'])
+@app.route('/addPlaylist/', methods=['GET','POST'])
 def add_playlist():
     if request.method == 'GET':
         # This code executes when someone visits the page.
