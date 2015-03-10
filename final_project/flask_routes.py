@@ -68,24 +68,59 @@ def query_database(comparison, search_term1, search_term2):
     if comparison == 'basic':
         g.c.execute("SELECT COUNT(*) FROM tweets;")
         total = g.c.fetchone()[0]
-        query = "SELECT COUNT(*), (COUNT(*) / %s) " \
-                "FROM tweets " \
-                "WHERE search_term = %s;"
+        query = """
+            SELECT COUNT(*), (COUNT(*) / %s)
+            FROM tweets
+            WHERE search_term = %s;
+        """
         g.c.execute(query, (total, search_term1))
         data1 = g.c.fetchone()
         g.c.execute(query, (total, search_term2))
         data2 = g.c.fetchone()
+    elif comparison == 'place':
+        query = """
+            SELECT t1.place, COALESCE(t2.num, 0), COALESCE(t3.num, 0)
+            FROM (
+                (
+                    SELECT place FROM tweets
+                    WHERE search_term IN (%s, %s)
+                    GROUP BY place
+                ) AS t1
+                LEFT OUTER JOIN (
+                    SELECT place, COUNT(*) AS num FROM tweets
+                    WHERE search_term = %s
+                    GROUP BY place
+                ) AS t2
+                ON t1.place = t2.place
+                LEFT OUTER JOIN (
+                    SELECT place, COUNT(*) AS num FROM tweets
+                    WHERE search_term = %s
+                    GROUP BY place
+                ) AS t3
+                ON t1.place = t3.place
+            );
+        """
+        g.c.execute(
+            query,
+            (search_term1, search_term2, search_term1, search_term2)
+        )
+        all_rows = g.c.fetchall()[1:]           # skip first row, where place is "NULL"
+        locations, data1, data2 = tuple(zip(*all_rows))
     else:
         if comparison == 'sentiment':
-            query = "SELECT AVG(sentiment) " \
-                    "FROM tweets " \
-                    "WHERE search_term = %s;"
+            query = """
+                SELECT AVG(sentiment)
+                FROM tweets
+                WHERE search_term = %s;
+            """
         elif comparison == 'time':
-            query = "SELECT COUNT(*) " \
-                    "FROM tweets " \
-                    "WHERE search_term = %s " \
-                    "GROUP BY DATE(created_at);"
-        elif comparison == 'space':
+            query = """
+                SELECT COUNT(*)
+                FROM tweets
+                WHERE search_term = %s
+                GROUP BY DATE(created_at);
+            """
+        else:
             pass
         if query:
             g.c.execute(query, (search_term1,))
@@ -95,7 +130,10 @@ def query_database(comparison, search_term1, search_term2):
     if not query:
         data1 = ('',)
         data2 = ('',)
-    return data1, data2
+    if comparison != 'place':
+        return data1, data2
+    else:
+        return data1, data2, locations
 
 def plot_data(comparison, title1, title2, data1, data2):
     if comparison == 'sentiment':
@@ -117,6 +155,8 @@ def plot_data(comparison, title1, title2, data1, data2):
         p.legend.orientation = "top_left"
         p.xaxis.major_label_orientation = 3.14 / 3
         fig_js, fig_div = components(p, CDN)
+    elif comparison == 'place':
+        fig_js, fig_div = '', ''
     else:
         fig_js, fig_div = '', ''
     return fig_js, fig_div
@@ -140,9 +180,12 @@ def compare():
     search_term2 = app.arg_to_query[show2]      # in addition to pymysql's execute function sanitizing arguments.
     title1 = app.arg_to_title[show1]
     title2 = app.arg_to_title[show2]
-    comp_full = app.comp_verbose[comparison]
     
-    data1, data2 = query_database(comparison, search_term1, search_term2)
+    if comparison != 'place':
+        comp_full = app.comp_verbose[comparison]
+        data1, data2 = query_database(comparison, search_term1, search_term2)
+    else:
+        data1, data2, comp_full = query_database(comparison, search_term1, search_term2)
     basic1, basic2 = query_database('basic', search_term1, search_term2)
     
     fig_js, fig_div = plot_data(comparison, title1, title2, data1, data2)

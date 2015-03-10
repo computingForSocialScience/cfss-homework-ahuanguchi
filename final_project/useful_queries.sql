@@ -12,13 +12,13 @@ FROM (
         FROM tweets
         WHERE sentiment > 0
         GROUP BY search_term
-    ) as t1
+    ) AS t1
     INNER JOIN (
         SELECT search_term, COUNT(*) as num_neg
         FROM tweets
         WHERE sentiment < 0
         GROUP BY search_term
-    ) as t2
+    ) AS t2
     ON t1.search_term = t2.search_term
 )
 ORDER BY pos_neg_ratio DESC;
@@ -52,3 +52,23 @@ SELECT place, COUNT(*) as num_tweets
 FROM tweets
 GROUP BY place
 ORDER BY num_tweets DESC, place;
+
+SELECT t1.place, COALESCE(t2.num, 0), COALESCE(t3.num, 0) FROM (
+    (
+        SELECT place FROM tweets
+        WHERE search_term IN ('durarara', 'shirobako')
+        GROUP BY place
+    ) AS t1
+    LEFT OUTER JOIN (
+        SELECT place, COUNT(*) AS num FROM tweets
+        WHERE search_term = 'durarara'
+        GROUP BY place
+    ) AS t2
+    ON t1.place = t2.place
+    LEFT OUTER JOIN (
+        SELECT place, COUNT(*) AS num FROM tweets
+        WHERE search_term = 'shirobako'
+        GROUP BY place
+    ) AS t3
+    ON t1.place = t3.place
+);
