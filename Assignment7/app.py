@@ -109,7 +109,7 @@ def make_playlist_resp(playlistId):
     return render_template('playlist.html', songs=songs)
 
 
-@app.route('/addPlaylist/', methods=['GET','POST'])
+@app.route('/addPlaylist/', methods=['GET', 'POST'])
 def add_playlist():
     if request.method == 'GET':
         # This code executes when someone visits the page.
@@ -118,6 +118,7 @@ def add_playlist():
         # this code executes when someone fills out the form
         artistName = request.form['artistName']
         # YOUR CODE HERE
+        createNewPlaylist(artistName)
         return(redirect("/playlists/"))
 
 
