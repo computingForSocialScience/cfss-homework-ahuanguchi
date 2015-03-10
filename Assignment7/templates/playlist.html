@@ -1,0 +1,23 @@
+<html>
+  <head>
+    <title>Playlist</title>
+  </head>
+  <body>
+    <h2>Playlist</h2>
+    <table>
+      <tr>
+        <th>songOrder</th>
+        <th>artistName</th>
+        <th>albumName</th>
+        <th>trackName</th>
+      </tr>
+      {% for row in songs %}
+        <tr>
+          {% for cell in row %}
+            <td>{{ cell }}</td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </table>
+  </body>
+</html>

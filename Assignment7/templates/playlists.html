@@ -3,8 +3,10 @@
     <title>All Playlists</title>
   </head>
   <body>
+    <h2>All Playlists</h2>
     {% for row in playlists %}
       <a href="/playlist/{{ row[0] }}">{{ row[0] }}. {{ row[1] }}</a>
       <br>
     {% endfor %}
+  </body>
 </html>

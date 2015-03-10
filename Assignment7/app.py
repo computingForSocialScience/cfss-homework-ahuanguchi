@@ -92,15 +92,20 @@ def make_index_resp():
 
 @app.route('/playlists/')
 def make_playlists_resp():
-    c.execute("""
-        SELECT * FROM playlists;
-    """)
+    c.execute("SELECT * FROM playlists;")
     playlists = c.fetchall()
     return render_template('playlists.html', playlists=playlists)
 
 
 @app.route('/playlist/<playlistId>')
 def make_playlist_resp(playlistId):
+    c.execute("""
+        SELECT songOrder, artistName, albumName, trackName
+        FROM songs
+        WHERE playlistId = %s
+        ORDER BY songOrder;
+    """, (playlistId, ))
+    songs = c.fetchall()
     return render_template('playlist.html', songs=songs)
 
 
