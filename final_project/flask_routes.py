@@ -151,7 +151,7 @@ def compare():
         'compare.html',
         title1=title1,
         title2=title2,
-        comparison='by ' + comparison.title() if comparison != 'basic' else '',
+        comparison='by ' + comparison.title(),
         comp_full=comp_full,
         data1=data1,
         data2=data2,
