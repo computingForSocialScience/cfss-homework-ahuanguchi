@@ -104,7 +104,7 @@ def query_database(comparison, search_term1, search_term2):
             query,
             (search_term1, search_term2, search_term1, search_term2)
         )
-        all_rows = g.c.fetchall()[1:]           # skip first row, where place is "NULL"
+        all_rows = g.c.fetchall()[1:]           # skip first row, where place is always "NULL"
         locations, data1, data2 = tuple(zip(*all_rows))
     else:
         if comparison == 'sentiment':
@@ -165,7 +165,7 @@ def plot_data(comparison, title1, title2, data1, data2, comp_full):
             title='', y_range=locations, y_axis_label='Place',
             x_axis_label='Number of Tweets',
             x_range=[0, max((counts1.max(), counts2.max())) + 1],
-            plot_width=1000, plot_height=600,
+            plot_width=1000, plot_height=680,
             tools='resize,reset,save,crosshair'
         )
         p.rect(
@@ -176,7 +176,7 @@ def plot_data(comparison, title1, title2, data1, data2, comp_full):
             y=locations_data2, x=counts2 / 2, height=0.2,
             width=counts2, color='blue', alpha=0.5, legend=title2
         )
-        p.xgrid.grid_line_color = None
+        p.ygrid.grid_line_color = None
         fig_js, fig_div = components(p, CDN)
     else:
         fig_js, fig_div = '', ''
