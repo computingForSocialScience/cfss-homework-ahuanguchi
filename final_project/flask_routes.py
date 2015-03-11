@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, g
-import pymysql
+import pymysql, numpy as np
 from bokeh.plotting import figure
 from bokeh.charts import Bar
 from bokeh.resources import CDN
@@ -153,18 +153,31 @@ def plot_data(comparison, title1, title2, data1, data2, comp_full):
         p.line(x_vals, data1[:-1], legend=title1, line_color='red')
         p.line(x_vals, data2[:-1], legend=title2)
         p.legend.orientation = "top_left"
-        p.xaxis.major_label_orientation = 3.14 / 3
+        p.xaxis.major_label_orientation = np.pi / 3
         fig_js, fig_div = components(p, CDN)
     elif comparison == 'place':
-        titles_to_counts = ((title1, data1), (title2, data2))
-        counts = OrderedDict(titles_to_counts)
-        bar_chart = Bar(
-            counts, list(comp_full),
-            xlabel='Locations', ylabel='Number of Tweets',
-            legend=True, width=1000, height=600,
+        locations_data1 = [l + ':0.4' for l in comp_full]
+        locations_data2 = [l + ':0.6' for l in comp_full]
+        counts1 = np.array(data1, dtype=np.float)
+        counts2 = np.array(data2, dtype=np.float)
+        p = figure(
+            title='', x_range=list(comp_full),
+            x_axis_label='Place', y_axis_label='Number of Tweets',
+            y_range=[0, max((counts1.max(), counts2.max()))],
+            plot_width=1000, plot_height=600,
             tools='resize,reset,save,crosshair'
         )
-        fig_js, fig_div = components(bar_chart, CDN)
+        p.rect(
+            x=locations_data1, y=counts1 / 2, width=0.2,
+            height=counts1, color='red', alpha=0.5, legend=title1
+        )
+        p.rect(
+            x=locations_data2, y=counts2 / 2, width=0.2,
+            height=counts2, color='blue', alpha=0.5, legend=title2
+        )
+        p.xgrid.grid_line_color = None
+        p.xaxis.major_label_orientation = np.pi / 2
+        fig_js, fig_div = components(p, CDN)
     else:
         fig_js, fig_div = '', ''
     return fig_js, fig_div
