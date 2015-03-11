@@ -157,8 +157,8 @@ def plot_data(comparison, title1, title2, data1, data2, comp_full):
         fig_js, fig_div = components(p, CDN)
     elif comparison == 'place':
         locations = list(reversed(comp_full))               # put places in alphabetical order from top to bottom
-        locations_data1 = [l + ':0.4' for l in locations]
-        locations_data2 = [l + ':0.6' for l in locations]
+        locations_data1 = [l + ':0.6' for l in locations]
+        locations_data2 = [l + ':0.4' for l in locations]
         counts1 = np.array(tuple(reversed(data1)), dtype=np.float)      # put data in the same order
         counts2 = np.array(tuple(reversed(data2)), dtype=np.float)
         p = figure(

@@ -49,6 +49,9 @@
           {% endfor %}
         </tr>
       </table>
+    {% else %}
+      <br>
+      <p><small>Note: Most tweets do not have place information.</small></p>
     {% endif %}
     <br>
     {{ fig_div|safe }}
