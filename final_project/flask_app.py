@@ -222,7 +222,9 @@ def compare():
         basic1=basic1,
         basic2=basic2,
         fig_js=fig_js,
-        fig_div=fig_div
+        fig_div=fig_div,
+        search_term1=search_term1,
+        search_term2=search_term2
     )
 
 if __name__ == '__main__':
