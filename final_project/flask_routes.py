@@ -4,6 +4,7 @@ from bokeh.plotting import figure
 from bokeh.charts import Bar
 from bokeh.resources import CDN
 from bokeh.embed import components
+from collections import OrderedDict
 
 app = Flask(__name__)
 
@@ -46,7 +47,6 @@ app.comp_verbose = {
         '03-02 (Mon)',
         '03-03 (Tue)'
     ),
-    'place': ('Tweet Locations',)
 }
 
 @app.before_request
@@ -135,7 +135,7 @@ def query_database(comparison, search_term1, search_term2):
     else:
         return data1, data2, locations
 
-def plot_data(comparison, title1, title2, data1, data2):
+def plot_data(comparison, title1, title2, data1, data2, comp_full):
     if comparison == 'sentiment':
         bar_chart = Bar(
             [float(data1[0]), float(data2[0])], [title1, title2],
@@ -144,7 +144,7 @@ def plot_data(comparison, title1, title2, data1, data2):
         )
         fig_js, fig_div = components(bar_chart, CDN)
     elif comparison == 'time':
-        x_vals = list(app.comp_verbose[comparison][:-1])
+        x_vals = list(comp_full[:-1])
         p = figure(
             title='', x_range=x_vals, x_axis_label='Day',
             y_axis_label='Number of Tweets',
@@ -156,7 +156,15 @@ def plot_data(comparison, title1, title2, data1, data2):
         p.xaxis.major_label_orientation = 3.14 / 3
         fig_js, fig_div = components(p, CDN)
     elif comparison == 'place':
-        fig_js, fig_div = '', ''
+        titles_to_counts = ((title1, data1), (title2, data2))
+        counts = OrderedDict(titles_to_counts)
+        bar_chart = Bar(
+            counts, list(comp_full),
+            xlabel='Locations', ylabel='Number of Tweets',
+            legend=True, width=1000, height=600,
+            tools='resize,reset,save,crosshair'
+        )
+        fig_js, fig_div = components(bar_chart, CDN)
     else:
         fig_js, fig_div = '', ''
     return fig_js, fig_div
@@ -188,7 +196,7 @@ def compare():
         data1, data2, comp_full = query_database(comparison, search_term1, search_term2)
     basic1, basic2 = query_database('basic', search_term1, search_term2)
     
-    fig_js, fig_div = plot_data(comparison, title1, title2, data1, data2)
+    fig_js, fig_div = plot_data(comparison, title1, title2, data1, data2, comp_full)
     
     return render_template(
         'compare.html',
