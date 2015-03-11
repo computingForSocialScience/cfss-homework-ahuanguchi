@@ -37,15 +37,14 @@ app.arg_to_query = {
 app.comp_verbose = {
     'sentiment': ('Average Sentiment (-1 to 1)',),
     'time': (
-        '2015-02-23 (Mon)',
-        '02-24 (Tue)',
-        '02-25 (Wed)',
-        '02-26 (Thu)',
-        '02-27 (Fri)',
-        '02-28 (Sat)',
-        '03-01 (Sun)',
-        '03-02 (Mon)',
-        '03-03 (Tue)'
+        '2015-03-04 (Wed)',
+        '03-05 (Thu)',
+        '03-06 (Fri)',
+        '03-07 (Sat)',
+        '03-08 (Sun)',
+        '03-09 (Mon)',
+        '03-10 (Tue)',
+        '03-11 (Wed)',
     ),
 }
 
@@ -144,15 +143,15 @@ def plot_data(comparison, title1, title2, data1, data2, comp_full):
         )
         fig_js, fig_div = components(bar_chart, CDN)
     elif comparison == 'time':
-        x_vals = list(comp_full[:-1])
+        x_vals = list(comp_full)
         p = figure(
             title='', x_range=x_vals, x_axis_label='Day',
+            y_range=[0, max(max(data1), max(data2)) * 1.3],
             y_axis_label='Number of Tweets',
             tools='resize,reset,save,crosshair'
         )
-        p.line(x_vals, data1[:-1], legend=title1, line_color='red')
-        p.line(x_vals, data2[:-1], legend=title2)
-        p.legend.orientation = "top_left"
+        p.line(x_vals, data1, legend=title1, line_color='red')
+        p.line(x_vals, data2, legend=title2)
         p.xaxis.major_label_orientation = np.pi / 3
         fig_js, fig_div = components(p, CDN)
     elif comparison == 'place':
@@ -164,8 +163,8 @@ def plot_data(comparison, title1, title2, data1, data2, comp_full):
         p = figure(
             title='', y_range=locations, y_axis_label='Place',
             x_axis_label='Number of Tweets',
-            x_range=[0, max((counts1.max(), counts2.max())) + 1],
-            plot_width=1000, plot_height=680,
+            x_range=[0, max(counts1.max(), counts2.max()) + 1],
+            plot_width=800, plot_height=600,
             tools='resize,reset,save,crosshair'
         )
         p.rect(

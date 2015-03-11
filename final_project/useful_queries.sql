@@ -48,6 +48,10 @@ SELECT DAYOFWEEK(created_at) as day_tweeted, AVG(sentiment) as avg_sentiment
 FROM tweets
 GROUP BY day_tweeted;
 
+SELECT DATE(created_at) as day_tweeted, AVG(sentiment) as avg_sentiment
+FROM tweets
+GROUP BY day_tweeted;
+
 SELECT place, COUNT(*) as num_tweets
 FROM tweets
 GROUP BY place
