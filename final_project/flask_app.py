@@ -50,6 +50,20 @@ app.comp_verbose = {
     'favorites': ('Average Favorites Per Tweet',),
     'jaden smith capitalization': ('Proportion of Jaden-like Tweets',)
 }
+app.comp_notes = {
+    'sentiment': 'Note: I used VADER Sentiment to rate the sentiment of ' \
+        'tweets lexically. To do this accurately, I had to prevent VADER ' \
+        'Sentiment from seeing words in the context of titles that it ' \
+        'assumes are non-neutral ("Death," "Assassination," "no," etc.).',
+    'time': 'Note: The Twitter Search API only returns tweets from up to a ' \
+        'week before the date of the search.',
+    'place': 'Note: I specifically searched for tweets written in English. ' \
+        'Also, most of the tweets do not have place information.',
+    'retweets': '',
+    'favorites': '',
+    'jaden smith capitalization': 'Note: For Those Who Don\'t Know, Jaden ' \
+        'Smith Capitalizes The First Letter Of Every Word In His Tweets.'
+}
 
 @app.before_request
 def before_request():
@@ -227,8 +241,9 @@ def compare():
         data1, data2 = query_database(comparison, search_term1, search_term2)
     else:
         data1, data2, comp_full = query_database(comparison, search_term1, search_term2)
-    basic1, basic2 = query_database('basic', search_term1, search_term2)
+    note = app.comp_notes[comparison]
     
+    basic1, basic2 = query_database('basic', search_term1, search_term2)
     fig_js, fig_div = plot_data(comparison, title1, title2, data1, data2, comp_full)
     
     return render_template(
@@ -244,7 +259,8 @@ def compare():
         fig_js=fig_js,
         fig_div=fig_div,
         search_term1=search_term1,
-        search_term2=search_term2
+        search_term2=search_term2,
+        note=note
     )
 
 if __name__ == '__main__':

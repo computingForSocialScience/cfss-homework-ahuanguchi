@@ -10,8 +10,6 @@
   <div class="jumbotron">
     <h3>Comparison of {{ title1 }} and {{ title2 }} Tweets {{ comparison }}</h3>
     <br>
-    <h5>Twitter API search terms: {{ search_term1 }}, {{ search_term2 }}</h5>
-    <br>
     <table class="notchart">
       <tr>
         <th>Show</th>
@@ -52,10 +50,9 @@
         </tr>
       </table>
       <br>
-    {% else %}
-      <br>
-      <h5>Note: I specifically searched for tweets typed in English. Also, most of the tweets do not have place information.</h5>
     {% endif %}
+    <h5>Twitter API search terms: {{ search_term1 }}, {{ search_term2 }}</h5>
+    <h5>{{ note }}</h5>
     {{ fig_div|safe }}
     <br>
     <p><a href="javascript: window.history.back()">Go back</a></p>
