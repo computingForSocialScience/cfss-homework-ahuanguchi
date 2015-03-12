@@ -1,20 +1,20 @@
 USE cfss;
 
-SELECT search_term, COUNT(*) as num_tweets
+SELECT search_term, COUNT(*) AS num_tweets
 FROM tweets
 GROUP BY search_term
 ORDER BY num_tweets DESC;
 
-SELECT t1.search_term, (num_pos / num_neg) as pos_neg_ratio
+SELECT t1.search_term, (num_pos / num_neg) AS pos_neg_ratio
 FROM (
     (
-        SELECT search_term, COUNT(*) as num_pos
+        SELECT search_term, COUNT(*) AS num_pos
         FROM tweets
         WHERE sentiment > 0
         GROUP BY search_term
     ) AS t1
     INNER JOIN (
-        SELECT search_term, COUNT(*) as num_neg
+        SELECT search_term, COUNT(*) AS num_neg
         FROM tweets
         WHERE sentiment < 0
         GROUP BY search_term
@@ -23,36 +23,36 @@ FROM (
 )
 ORDER BY pos_neg_ratio DESC;
 
-SELECT search_term, AVG(sentiment) as avg_sentiment
+SELECT search_term, AVG(sentiment) AS avg_sentiment
 FROM tweets
 GROUP BY search_term
 ORDER BY avg_sentiment DESC;
 
-SELECT search_term, AVG(sentiment) as avg_pos_sentiment
+SELECT search_term, AVG(sentiment) AS avg_pos_sentiment
 FROM tweets
 WHERE sentiment > 0
 GROUP BY search_term
 ORDER BY avg_pos_sentiment DESC;
 
-SELECT search_term, AVG(sentiment) as avg_neg_sentiment
+SELECT search_term, AVG(sentiment) AS avg_neg_sentiment
 FROM tweets
 WHERE sentiment < 0
 GROUP BY search_term
 ORDER BY avg_neg_sentiment;
 
-SELECT HOUR(created_at) as hour_tweeted, AVG(sentiment) as avg_sentiment
+SELECT HOUR(created_at) AS hour_tweeted, AVG(sentiment) AS avg_sentiment
 FROM tweets
 GROUP BY hour_tweeted;
 
-SELECT DAYOFWEEK(created_at) as day_tweeted, AVG(sentiment) as avg_sentiment
+SELECT DAYOFWEEK(created_at) AS day_tweeted, AVG(sentiment) AS avg_sentiment
 FROM tweets
 GROUP BY day_tweeted;
 
-SELECT DATE(created_at) as day_tweeted, AVG(sentiment) as avg_sentiment
+SELECT DATE(created_at) AS day_tweeted, AVG(sentiment) AS avg_sentiment
 FROM tweets
 GROUP BY day_tweeted;
 
-SELECT place, COUNT(*) as num_tweets
+SELECT place, COUNT(*) AS num_tweets
 FROM tweets
 GROUP BY place
 ORDER BY num_tweets DESC, place;
@@ -76,3 +76,23 @@ SELECT t1.place, COALESCE(t2.num, 0), COALESCE(t3.num, 0) FROM (
     ) AS t3
     ON t1.place = t3.place
 );
+
+SELECT search_term, (SUM(jaden_cap) / COUNT(*)) AS proportion_jadenlike
+FROM tweets
+GROUP BY search_term
+ORDER BY proportion_jadenlike DESC;
+
+SELECT search_term, (SUM(retweeted) / COUNT(*)) AS proportion_retweeted
+FROM tweets
+GROUP BY search_term
+ORDER BY proportion_retweeted DESC;
+
+SELECT search_term, AVG(retweet_count) AS avg_retweet_count
+FROM tweets
+GROUP BY search_term
+ORDER BY avg_retweet_count DESC;
+
+SELECT search_term, AVG(favorite_count) AS avg_favorite_count
+FROM tweets
+GROUP BY search_term
+ORDER BY avg_favorite_count DESC;

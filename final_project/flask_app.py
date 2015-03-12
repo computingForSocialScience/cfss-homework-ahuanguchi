@@ -46,6 +46,9 @@ app.comp_verbose = {
         '03-10 (Tue)',
         '03-11 (Wed)',
     ),
+    'retweets': ('Average Retweets Per Tweet',),
+    'favorites': ('Average Favorites Per Tweet',),
+    'jaden smith capitalization': ('Proportion of Jaden-like Tweets',)
 }
 
 @app.before_request
@@ -119,6 +122,24 @@ def query_database(comparison, search_term1, search_term2):
                 WHERE search_term = %s
                 GROUP BY DATE(created_at);
             """
+        elif comparison == 'retweets':
+            query = """
+                SELECT AVG(retweet_count)
+                FROM tweets
+                WHERE search_term = %s;
+            """
+        elif comparison == 'favorites':
+            query = """
+                SELECT AVG(favorite_count)
+                FROM tweets
+                WHERE search_term = %s;
+            """
+        elif comparison == 'jaden smith capitalization':
+            query = """
+                SELECT SUM(jaden_cap) / COUNT(*)
+                FROM tweets
+                WHERE search_term = %s;
+            """
         else:
             pass
         if query:
@@ -135,10 +156,10 @@ def query_database(comparison, search_term1, search_term2):
         return data1, data2, locations
 
 def plot_data(comparison, title1, title2, data1, data2, comp_full):
-    if comparison == 'sentiment':
+    if comparison in ('sentiment', 'retweets', 'favorites', 'jaden smith capitalization'):
         bar_chart = Bar(
             [float(data1[0]), float(data2[0])], [title1, title2],
-            xlabel='Show', ylabel='Average Sentiment (-1 to 1)',
+            xlabel='Show', ylabel=comp_full[0],
             tools='resize,reset,save,crosshair'
         )
         fig_js, fig_div = components(bar_chart, CDN)
@@ -164,7 +185,7 @@ def plot_data(comparison, title1, title2, data1, data2, comp_full):
             title='', y_range=locations, y_axis_label='Place',
             x_axis_label='Number of Tweets',
             x_range=[0, max(counts1.max(), counts2.max()) + 1],
-            plot_width=800, plot_height=600,
+            plot_width=800, plot_height=500,
             tools='resize,reset,save,crosshair'
         )
         p.rect(
