@@ -62,7 +62,8 @@ app.comp_notes = {
     'retweets': '',
     'favorites': '',
     'jaden smith capitalization': 'Note: For Those Who Don\'t Know, Jaden ' \
-        'Smith Capitalizes The First Letter Of Every Word In His Tweets.'
+        'Smith Capitalizes The First Letter Of Every Word In His Tweets. ' \
+        'THIS INCLUDES ALL CAPS TWEETS.'
 }
 
 @app.before_request
