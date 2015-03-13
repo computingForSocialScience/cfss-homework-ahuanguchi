@@ -6,14 +6,16 @@ Preparation
 
 To make the database for my web app, I used Tweepy, JSON, and MySQL. I used 
 the script in table_creation.sql to create/recreate tables as needed 
-(usually to modify a VARCHAR field that wasn't long enough). Through 
+(often to modify a VARCHAR field that wasn't long enough). Through 
 Tweepy, I accessed the Twitter Search API, which returns tweets that match 
 certain queries and data about them. To make my results as inclusive as 
 possible, I included common alternate titles in my queries 
 (e.g., '"yona of the dawn" OR "akatsuki no yona"'). I avoided exceeding the 
 API's rate limit all at once by uncommenting different queries in 
 twitter_api.py and running the script for each one. Each time, a new JSON file 
-containing all of the information I wanted was made.
+containing all of the information I wanted was made. I didn't send the data 
+directly to my MySQL database because I didn't want to risk losing information 
+by putting it into fields that I didn't allocate enough space to.
 
 Once I was done collecting 
 data, I used tweets_to_mysql.py to dump everything contained in all of the JSON 
@@ -22,7 +24,8 @@ each time I did this because I kept changing the formats and/or kinds of data I
 was collecting for each tweet, which made old data unusable. 
 
 The file useful_queries.sql just contains various SELECT statements I wrote to 
-help me get a general grasp of the data I was collecting.
+help me get a general grasp of the data I was collecting. I modified some of 
+them to make them usable in the actual application.
 
 
 Web App Usage
