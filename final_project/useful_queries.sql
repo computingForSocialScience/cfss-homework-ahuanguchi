@@ -57,7 +57,8 @@ FROM tweets
 GROUP BY place
 ORDER BY num_tweets DESC, place;
 
-SELECT t1.place, COALESCE(t2.num, 0), COALESCE(t3.num, 0) FROM (
+SELECT t1.place, COALESCE(t2.num, 0), COALESCE(t3.num, 0)
+FROM (
     (
         SELECT place FROM tweets
         WHERE search_term IN ('durarara', 'shirobako')
@@ -96,3 +97,53 @@ SELECT search_term, AVG(favorite_count) AS avg_favorite_count
 FROM tweets
 GROUP BY search_term
 ORDER BY avg_favorite_count DESC;
+
+SELECT
+    search_term,
+    AVG(num_hashtags) AS avg_num_hashtags
+FROM (
+    SELECT
+        search_term,
+        IF(
+            hashtags LIKE '%,%',
+            LENGTH(hashtags) - LENGTH(REPLACE(hashtags, ',', '')) + 1,
+            IF(
+                hashtags != '',
+                1,
+                0
+            )
+        ) AS num_hashtags
+    FROM (
+        tweets AS t
+        INNER JOIN
+        entities AS e
+        ON t.id = e.id
+    )
+) AS full_table
+GROUP BY search_term
+ORDER BY avg_num_hashtags DESC;
+
+SELECT
+    search_term,
+    AVG(num_urls) AS avg_num_urls
+FROM (
+    SELECT
+        search_term,
+        IF(
+            urls LIKE '%,%',
+            LENGTH(urls) - LENGTH(REPLACE(urls, ',', '')) + 1,
+            IF(
+                urls != '',
+                1,
+                0
+            )
+        ) AS num_urls
+    FROM (
+        tweets AS t
+        INNER JOIN
+        entities AS e
+        ON t.id = e.id
+    )
+) AS full_table
+GROUP BY search_term
+ORDER BY avg_num_urls DESC;
