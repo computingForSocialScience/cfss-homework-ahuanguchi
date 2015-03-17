@@ -4,7 +4,6 @@ from bokeh.plotting import figure
 from bokeh.charts import Bar
 from bokeh.resources import CDN
 from bokeh.embed import components
-from collections import OrderedDict
 
 app = Flask(__name__)
 
