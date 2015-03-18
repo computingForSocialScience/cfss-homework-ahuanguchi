@@ -47,7 +47,8 @@ app.comp_verbose = {
     ),
     'retweets': ('Average Retweets Per Tweet',),
     'favorites': ('Average Favorites Per Tweet',),
-    'jaden smith capitalization': ('Proportion of Jaden-like Tweets',)
+    'jaden smith capitalization': ('Proportion of Jaden-like Tweets',),
+    'hashtags': ('Average Hashtags Per Tweet',)
 }
 app.comp_notes = {
     'sentiment': 'Note: I used VADER Sentiment to rate the sentiment of ' \
@@ -62,7 +63,8 @@ app.comp_notes = {
     'favorites': '',
     'jaden smith capitalization': 'Note: For Those Who Don\'t Know, Jaden ' \
         'Smith Capitalizes The First Letter Of Every Word In His Tweets. ' \
-        'THIS INCLUDES ALL CAPS TWEETS.'
+        'THIS INCLUDES ALL CAPS TWEETS.',
+    'hashtags': ''
 }
 
 @app.before_request
@@ -154,6 +156,30 @@ def query_database(comparison, search_term1, search_term2):
                 FROM tweets
                 WHERE search_term = %s;
             """
+        elif comparison == 'hashtags':
+            query = """
+                SELECT
+                    AVG(num_hashtags) AS avg_num_hashtags
+                FROM (
+                    SELECT
+                        search_term,
+                        IF(
+                            hashtags LIKE '%%,%%',
+                            LENGTH(hashtags) - LENGTH(REPLACE(hashtags, ',', '')) + 1,
+                            IF(
+                                hashtags != '',
+                                1,
+                                0
+                            )
+                        ) AS num_hashtags
+                    FROM (
+                        tweets AS t
+                        INNER JOIN
+                        entities AS e
+                        ON t.id = e.id
+                    ) WHERE search_term = %s
+                ) AS full_table;
+            """
         else:
             pass
         if query:
@@ -170,7 +196,8 @@ def query_database(comparison, search_term1, search_term2):
         return data1, data2, locations
 
 def plot_data(comparison, title1, title2, data1, data2, comp_full):
-    if comparison in ('sentiment', 'retweets', 'favorites', 'jaden smith capitalization'):
+    if comparison in ('sentiment', 'retweets', 'favorites',
+                      'jaden smith capitalization', 'hashtags'):
         bar_chart = Bar(
             [float(data1[0]), float(data2[0])], [title1, title2],
             xlabel='Show', ylabel=comp_full[0],
@@ -264,5 +291,5 @@ def compare():
     )
 
 if __name__ == '__main__':
-    # app.debug = True
+    app.debug = True
     app.run()
