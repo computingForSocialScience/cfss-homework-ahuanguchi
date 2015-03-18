@@ -124,7 +124,7 @@ def query_database(comparison, search_term1, search_term2):
             query,
             (search_term1, search_term2, search_term1, search_term2)
         )
-        all_rows = g.c.fetchall()[1:]           # skip first row, where place is always "NULL"
+        all_rows = g.c.fetchall()[1:]           # skip first row, where place is always NULL
         locations, data1, data2 = tuple(zip(*all_rows))
     else:
         if comparison == 'sentiment':
@@ -160,8 +160,7 @@ def query_database(comparison, search_term1, search_term2):
             """
         elif comparison == 'hashtags':
             query = """
-                SELECT
-                    AVG(num_hashtags)
+                SELECT AVG(num_hashtags)
                 FROM (
                     SELECT
                         IF(
@@ -183,8 +182,7 @@ def query_database(comparison, search_term1, search_term2):
             """
         elif comparison == 'urls':
             query = """
-                SELECT
-                    AVG(num_urls)
+                SELECT AVG(num_urls)
                 FROM (
                     SELECT
                         IF(
@@ -212,12 +210,12 @@ def query_database(comparison, search_term1, search_term2):
             g.c.execute(query, (search_term2,))
             data2 = tuple(x[0] for x in g.c.fetchall())
     if not query:
-        data1 = ('',)
+        data1 = ('',)       # defaults to empty strings if comparison is missing
         data2 = ('',)
-    if comparison != 'place':
-        return data1, data2
-    else:
+    if comparison == 'place':
         return data1, data2, locations
+    else:
+        return data1, data2
 
 def plot_data(comparison, title1, title2, data1, data2, comp_full):
     if comparison in ('sentiment', 'retweets', 'favorites',
@@ -264,7 +262,7 @@ def plot_data(comparison, title1, title2, data1, data2, comp_full):
         p.ygrid.grid_line_color = None
         fig_js, fig_div = components(p, CDN)
     else:
-        fig_js, fig_div = '', ''
+        fig_js, fig_div = '', ''    # defaults to empty strings if comparison is missing
     return fig_js, fig_div
 
 @app.route('/')
@@ -297,11 +295,16 @@ def compare():
     basic1, basic2 = query_database('basic', search_term1, search_term2)
     fig_js, fig_div = plot_data(comparison, title1, title2, data1, data2, comp_full)
     
+    if comparison == 'urls':
+        comparison = 'by URLs'
+    else:
+        comparison = 'by ' + comparison.title()
+    
     return render_template(
         'compare.html',
         title1=title1,
         title2=title2,
-        comparison='by ' + comparison.title(),
+        comparison=comparison,
         comp_full=comp_full,
         data1=data1,
         data2=data2,
